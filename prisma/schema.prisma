@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  name        String
+  password    String
+  color       String
+  createdAt   DateTime  @default(now())
+  memberships Member[]
+  comments    Comment[]
+  versions    Version[]
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  ownerId   String
+  createdAt DateTime @default(now())
+  members   Member[]
+  pages     Page[]
+}
+
+// A user's role inside a workspace: OWNER, EDIT, COMMENT or VIEW
+model Member {
+  id          String    @id @default(cuid())
+  workspaceId String
+  userId      String
+  role        String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+}
+
+model Page {
+  id          String    @id @default(cuid())
+  workspaceId String
+  title       String    @default("Untitled")
+  content     Bytes? // the Yjs document, saved as binary
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  comments    Comment[]
+  versions    Version[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  pageId    String
+  userId    String
+  text      String
+  createdAt DateTime @default(now())
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// A saved snapshot of a page (the full Yjs state at that moment)
+model Version {
+  id        String   @id @default(cuid())
+  pageId    String
+  userId    String
+  label     String
+  state     Bytes
+  createdAt DateTime @default(now())
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
