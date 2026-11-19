@@ -1,0 +1,39 @@
+{
+  "name": "collabspace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "ws": "node server/index.js",
+    "dev:all": "concurrently -n web,ws \"next dev\" \"node server/index.js\"",
+    "db:push": "prisma db push",
+    "seed": "node prisma/seed.js",
+    "loadtest": "node scripts/loadtest.js",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "@tiptap/extension-collaboration": "^2.9.1",
+    "@tiptap/extension-collaboration-cursor": "^2.9.1",
+    "@tiptap/pm": "^2.9.1",
+    "@tiptap/react": "^2.9.1",
+    "@tiptap/starter-kit": "^2.9.1",
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "lib0": "^0.2.97",
+    "next": "14.2.15",
+    "prisma": "^5.20.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "ws": "^8.18.0",
+    "y-prosemirror": "^1.2.12",
+    "y-protocols": "^1.0.6",
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.18"
+  }
+}
